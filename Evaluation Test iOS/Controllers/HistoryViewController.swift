@@ -7,28 +7,19 @@
 
 import UIKit
 
-//protocol UpdateSearchDelegate {
-//    func didUpdateSearch(text: String)
-//}
 
 class HistoryViewController: UITableViewController {
     
-    
-    
-    
+
     fileprivate let cellId = "cellId"
-    let albumsSearchVC = AlbumsSearchController()
-
-    var history: [String] = []
     fileprivate var cellText: String = ""
-
-//    var delegate: UpdateSearchDelegate?
+    let albumsSearchVC = AlbumsSearchController()
+    var history: [String] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
-        
-        
+
 //        let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("SearchHistory.plist")
 //        print(dataFilePath!)
         
@@ -43,16 +34,13 @@ class HistoryViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let selectedIndex = tableView.indexPathForSelectedRow?.row else { return }
         let cellText = history[selectedIndex]
-//        present(albumsSearchVC, animated: true, completion: nil)
 //        albumsSearchVC.searchTextField = cellText
         
-//        var firstTab = (tabBarController?.viewControllers![0])! as! UINavigationController
-//        firstTab = cellText
-        
-        
-//        delegate?.didUpdateSearch(text: cellText)
-//        self.tabBarController?.selectedIndex = 0
-        print(cellText)
+        let firstTab = (tabBarController?.viewControllers![0])! as! UINavigationController
+        let vc = firstTab.viewControllers[0] as! AlbumsSearchController
+        vc.searchTextFromHistory = cellText
+        self.tabBarController?.selectedIndex = 0
+
     }
 
 

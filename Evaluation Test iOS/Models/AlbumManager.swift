@@ -18,8 +18,9 @@ class AlbumManager {
     var delegate: AlbumsManagerDelegate?
     
     func getAlbum(searchText: String?) {
-
-        let url = "https://itunes.apple.com/search?term=\(searchText ?? "")&media=music&entity=album&attribute=albumTerm&limit=10" //Поиск по названию альбома из поисковой строки
+        let urlString = "https://itunes.apple.com/search?term=\(searchText ?? "")&media=music&entity=album&attribute=albumTerm&limit=50"
+        let url = urlString.encodeUrl //Поиск по названию альбома из поисковой строки
+        
         print(url)
         
         APIService.shared.getJSON(urlString: url) { (result: Result <Album, APIService.APIError>) in

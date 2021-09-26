@@ -7,35 +7,31 @@
 
 import UIKit
 
+
 class AlbumsSearchController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UISearchBarDelegate, AlbumsManagerDelegate {
-    
-    
-    
-//    func didUpdateSearch(text: String) {
-//        DispatchQueue.main.async {
-//            self.albumManager.getAlbum(searchText: text)
-//            self.collectionView.reloadData()
-//        }
-//    }
-    
-    
 
     fileprivate let cellId = "cellId"
     fileprivate let searchController = UISearchController(searchResultsController: nil)
     fileprivate var albumManager = AlbumManager()
-    var timer: Timer?
+    
     var albums: Album?
-    var searchTextField: String = ""
+    var searchTextFromSearchField: String = ""
+    var searchTextFromHistory: String {
+        set {
+            DispatchQueue.main.async {
+                self.albumManager.getAlbum(searchText: newValue)
+            }
+        }
+        get { searchController.searchBar.text ?? "" }
+    }
   
     let defaults = UserDefaults.standard
-//    lazy var historyVC = HistoryViewController()
    
     fileprivate let initialSearchTextLabel: UILabel = {
         let label = UILabel()
         label.text = "Please enter search query."
         label.font = UIFont.boldSystemFont(ofSize: 24)
         label.textAlignment = .center
-        
         return label
     }()
     
@@ -47,19 +43,15 @@ class AlbumsSearchController: UICollectionViewController, UICollectionViewDelega
         
         setupSearchBar()
         albumManager.delegate = self
-        
         view.addSubview(initialSearchTextLabel)
         initialSearchTextLabel.centerInSuperview()
         
         if let items = defaults.array(forKey: "SearchHistory") as? [String] {
             searchRequests.history = items
         }
-
-//        historyVC.delegate = self
-        
     }
     
-    
+    //MARK: - Protocol Methods
     
     func didUpdateAlbums(album: Album) {
         DispatchQueue.main.async {
@@ -67,6 +59,11 @@ class AlbumsSearchController: UICollectionViewController, UICollectionViewDelega
             self.collectionView.reloadData()
         }
     }
+    func didFailWithError(error: String) { //ошибка от протокола
+        print(error)
+    }
+    
+    //MARK: - Setup SearchBar and Methods
     
     fileprivate func setupSearchBar() {
         navigationItem.searchController = searchController
@@ -74,23 +71,20 @@ class AlbumsSearchController: UICollectionViewController, UICollectionViewDelega
 //        searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.delegate = self
     }
-    
+
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-//        self.albums = nil
-        searchTextField = searchText
-//        timer?.invalidate()
-//        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
-//            self.albumManager.getAlbum(searchText: searchText)
-//        }
+        searchTextFromSearchField = searchText
+        self.albums = nil
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        self.albumManager.getAlbum(searchText: searchTextField)
+        self.albumManager.getAlbum(searchText: searchTextFromSearchField)
         
-        searchRequests.history.append(searchTextField)
+        searchRequests.history.append(searchTextFromSearchField)
         defaults.setValue(searchRequests.history, forKey: "SearchHistory")
     }
     
+    //MARK: - CollectionView Setups
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 
@@ -127,10 +121,6 @@ class AlbumsSearchController: UICollectionViewController, UICollectionViewDelega
         return albums?.resultCount ?? 0
     }
 
-    func didFailWithError(error: String) { //ошибка от протокола
-        print(error)
-    }
- 
     init() {
         super.init(collectionViewLayout: UICollectionViewFlowLayout())
     }
@@ -142,3 +132,13 @@ class AlbumsSearchController: UICollectionViewController, UICollectionViewDelega
 }
 
 
+
+
+
+
+//Deprecated Code
+//var timer: Timer?
+//        timer?.invalidate()
+//        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
+//            self.albumManager.getAlbum(searchText: searchText)
+//        }
