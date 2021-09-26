@@ -22,7 +22,7 @@ class APIService {
         let request = URLRequest(url: url)
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                completion(.failure(.error("Error: \(error)"))) // Error that indicates why the request failed, or nil if the request was successful.
+                completion(.failure(.error("Error: \(error.localizedDescription)"))) // Error that indicates why the request failed, or nil if the request was successful.
                 return
             }
             guard let data = data else {
@@ -35,7 +35,7 @@ class APIService {
                 completion(.success(decodedData))
                 return
             } catch let decodingError {
-                completion(.failure(.error("Error, \(decodingError)")))
+                completion(.failure(.error("Error, \(decodingError.localizedDescription)")))
             }
         }.resume()
     }

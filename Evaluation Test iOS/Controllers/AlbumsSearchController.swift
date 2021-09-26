@@ -21,6 +21,8 @@ class AlbumsSearchController: UICollectionViewController, UICollectionViewDelega
             DispatchQueue.main.async {
                 self.albumManager.getAlbum(searchText: newValue)
             }
+            self.view.addSubview(self.activityIndicatorView)
+            self.activityIndicatorView.centerInSuperview()
         }
         get { searchController.searchBar.text ?? "" }
     }
@@ -29,10 +31,18 @@ class AlbumsSearchController: UICollectionViewController, UICollectionViewDelega
    
     fileprivate let initialSearchTextLabel: UILabel = {
         let label = UILabel()
-        label.text = "Please enter search query."
-        label.font = UIFont.boldSystemFont(ofSize: 24)
+        label.text = "No results or you have not searched. \n Please enter search query."
+        label.numberOfLines = 2
+        label.font = UIFont.boldSystemFont(ofSize: 22)
         label.textAlignment = .center
         return label
+    }()
+    
+    fileprivate let activityIndicatorView: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .whiteLarge)
+        indicator.startAnimating()
+        indicator.color = .darkGray
+    return indicator
     }()
     
     
@@ -45,7 +55,7 @@ class AlbumsSearchController: UICollectionViewController, UICollectionViewDelega
         albumManager.delegate = self
         view.addSubview(initialSearchTextLabel)
         initialSearchTextLabel.centerInSuperview()
-        
+        self.definesPresentationContext = true
         if let items = defaults.array(forKey: "SearchHistory") as? [String] {
             searchRequests.history = items
         }
@@ -59,8 +69,15 @@ class AlbumsSearchController: UICollectionViewController, UICollectionViewDelega
             self.collectionView.reloadData()
         }
     }
-    func didFailWithError(error: String) { //ошибка от протокола
-        print(error)
+    func didFailWithError(error: String) {
+        
+        DispatchQueue.main.async {
+            let alertController = UIAlertController(title: "URL not found.", message: error, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
+                self.activityIndicatorView.removeFromSuperview()
+            }))
+            self.present(alertController, animated: true)
+        }
     }
     
     //MARK: - Setup SearchBar and Methods
@@ -68,7 +85,7 @@ class AlbumsSearchController: UICollectionViewController, UICollectionViewDelega
     fileprivate func setupSearchBar() {
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
-//        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.delegate = self
     }
 
@@ -78,13 +95,17 @@ class AlbumsSearchController: UICollectionViewController, UICollectionViewDelega
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        if searchBar.text != " " {
         self.albumManager.getAlbum(searchText: searchTextFromSearchField)
-        
         searchRequests.history.append(searchTextFromSearchField)
         defaults.setValue(searchRequests.history, forKey: "SearchHistory")
+        view.addSubview(activityIndicatorView)
+        activityIndicatorView.centerInSuperview()
+        } else { return }
     }
     
     //MARK: - CollectionView Setups
+
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 
@@ -117,9 +138,24 @@ class AlbumsSearchController: UICollectionViewController, UICollectionViewDelega
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        initialSearchTextLabel.isHidden = albums?.results.count != nil // Если нет результатов, то убрать надпись
+        
+        if albums?.resultCount == nil {
+            initialSearchTextLabel.isHidden = false
+            
+        } else if albums?.resultCount == 0 {
+            initialSearchTextLabel.isHidden = false
+            activityIndicatorView.removeFromSuperview()
+            
+        } else if let number = albums?.resultCount {
+            if number > 1 {
+                activityIndicatorView.removeFromSuperview()
+                initialSearchTextLabel.isHidden = true
+            }
+        }
+
         return albums?.resultCount ?? 0
     }
+
 
     init() {
         super.init(collectionViewLayout: UICollectionViewFlowLayout())
@@ -130,15 +166,3 @@ class AlbumsSearchController: UICollectionViewController, UICollectionViewDelega
     }
     
 }
-
-
-
-
-
-
-//Deprecated Code
-//var timer: Timer?
-//        timer?.invalidate()
-//        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
-//            self.albumManager.getAlbum(searchText: searchText)
-//        }

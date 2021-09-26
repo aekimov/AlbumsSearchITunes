@@ -23,7 +23,6 @@
 		FF816B3726FF0F7B008F3B10 /* AlbumManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF816B3626FF0F7B008F3B10 /* AlbumManager.swift */; };
 		FFC95C5526FD74EB00EBAE59 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFC95C5426FD74EB00EBAE59 /* AppDelegate.swift */; };
 		FFC95C5726FD74EB00EBAE59 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFC95C5626FD74EB00EBAE59 /* SceneDelegate.swift */; };
-		FFC95C5926FD74EB00EBAE59 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFC95C5826FD74EB00EBAE59 /* ViewController.swift */; };
 		FFC95C5C26FD74EB00EBAE59 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FFC95C5A26FD74EB00EBAE59 /* Main.storyboard */; };
 		FFC95C5E26FD74EC00EBAE59 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FFC95C5D26FD74EC00EBAE59 /* Assets.xcassets */; };
 		FFC95C6126FD74EC00EBAE59 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FFC95C5F26FD74EC00EBAE59 /* LaunchScreen.storyboard */; };
@@ -51,7 +50,6 @@
 		FFC95C5126FD74EB00EBAE59 /* Evaluation Test iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Evaluation Test iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FFC95C5426FD74EB00EBAE59 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FFC95C5626FD74EB00EBAE59 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		FFC95C5826FD74EB00EBAE59 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		FFC95C5B26FD74EB00EBAE59 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FFC95C5D26FD74EC00EBAE59 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FFC95C6026FD74EC00EBAE59 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -156,7 +154,6 @@
 				FF5F3A7B26FE655900ADB084 /* API Service */,
 				FFC95C5426FD74EB00EBAE59 /* AppDelegate.swift */,
 				FFC95C5626FD74EB00EBAE59 /* SceneDelegate.swift */,
-				FFC95C5826FD74EB00EBAE59 /* ViewController.swift */,
 				FFC95C5A26FD74EB00EBAE59 /* Main.storyboard */,
 				FFC95C5D26FD74EC00EBAE59 /* Assets.xcassets */,
 				FFC95C5F26FD74EC00EBAE59 /* LaunchScreen.storyboard */,
@@ -292,7 +289,6 @@
 			files = (
 				FF50C1332700831A004DFD32 /* String.swift in Sources */,
 				FF50C11D26FF5B03004DFD32 /* AlbumInfoViewController.swift in Sources */,
-				FFC95C5926FD74EB00EBAE59 /* ViewController.swift in Sources */,
 				FF5F3A7D26FE661100ADB084 /* APIService.swift in Sources */,
 				FF50C11B26FF4DC4004DFD32 /* Anchors.swift in Sources */,
 				FF5F3A7926FE536B00ADB084 /* AlbumSearchCell.swift in Sources */,

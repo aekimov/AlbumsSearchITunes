@@ -14,29 +14,25 @@ protocol AlbumsManagerDelegate {
 }
 
 class AlbumManager {
-    
+
     var delegate: AlbumsManagerDelegate?
     
     func getAlbum(searchText: String?) {
-        let urlString = "https://itunes.apple.com/search?term=\(searchText ?? "")&media=music&entity=album&attribute=albumTerm&limit=50"
+        guard let searchTerm = searchText else { return }
+        
+        let urlString = "https://itunes.apple.com/search?term=\(searchTerm)&media=music&entity=album&attribute=albumTerm"
         let url = urlString.encodeUrl //Поиск по названию альбома из поисковой строки
         
         print(url)
         
         APIService.shared.getJSON(urlString: url) { (result: Result <Album, APIService.APIError>) in
             switch result {
-            case .success(let album): // финальный объект тот что мы получаем
-//                let sortedAlbum = album.results.sorted { (first, second) -> Bool in
-//                    first.collectionName < first.collectionName
-//                }
-//                print(album.results)
-//                print(sortedAlbum)
+            case .success(let album):
                 self.delegate?.didUpdateAlbums(album: album)
-        
+                
             case .failure(let apiError):
                 switch apiError {
                 case .error(let errorString):
-                    
                     self.delegate?.didFailWithError(error: errorString)
                     
                 }

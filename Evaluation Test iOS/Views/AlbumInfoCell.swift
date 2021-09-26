@@ -9,10 +9,10 @@ import UIKit
 
 class AlbumInfoCell: UITableViewCell {
     
-    var albumInfo: AlbumInfo.Results! { // надо подумать
+    var albumInfo: AlbumInfo.Results? {
         didSet {
-            self.trackNameLabel.text = albumInfo.trackName
-            self.artistNameLabel.text = albumInfo.artistName
+            self.trackNameLabel.text = albumInfo?.trackName
+            self.artistNameLabel.text = albumInfo?.artistName
         }
     }
     
@@ -29,7 +29,6 @@ class AlbumInfoCell: UITableViewCell {
     let trackNameLabel: UILabel = {
         let label = UILabel()
         label.text = "Intense"
-//        label.backgroundColor = .blue
         label.font = UIFont.systemFont(ofSize: 17)
         label.textColor = .black
         label.numberOfLines = 1
@@ -39,7 +38,6 @@ class AlbumInfoCell: UITableViewCell {
     let artistNameLabel: UILabel = {
         let label = UILabel()
         label.text = "Armin van Buuren"
-//        label.backgroundColor = .yellow
         label.font = UIFont.systemFont(ofSize: 15)
         label.textColor = .lightGray
         label.numberOfLines = 1

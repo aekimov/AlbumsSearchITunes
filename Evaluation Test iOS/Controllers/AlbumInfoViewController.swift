@@ -13,18 +13,27 @@ class AlbumInfoViewController: UITableViewController, AlbumsInfoManagerDelegate 
     fileprivate let albumInfoManager = AlbumInfoManager()
     fileprivate let albumViewForHeader = AlbumInfoViewForHeader()
     var array = [String]()
-
+    
     var collectionId: Int?
     var albumInfo: AlbumInfo?
+    
+    fileprivate let activityIndicatorView: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .whiteLarge)
+        indicator.startAnimating()
+        indicator.color = .darkGray
+    return indicator
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.register(AlbumInfoCell.self, forCellReuseIdentifier: cellId)
-//        tableView.contentInsetAdjustmentBehavior = .never
         albumInfoManager.delegate = self
         guard let collectionId = collectionId else { return }
         albumInfoManager.getAlbumInfoAndSongs(collectionId: collectionId)
+
+        tableView.contentInset = UIEdgeInsets(top: 90, left: 0, bottom: 0, right: 0)
+        tableView.contentInsetAdjustmentBehavior = .never
     }
     
     func didUpdateAlbums(albumInfo: AlbumInfo) {
@@ -35,12 +44,19 @@ class AlbumInfoViewController: UITableViewController, AlbumsInfoManagerDelegate 
     }
     
     func didFailWithError(error: String) {
-        print(error)
+        DispatchQueue.main.async {
+            let alertController = UIAlertController(title: "URL not found.", message: error, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
+                self.activityIndicatorView.removeFromSuperview()
+            }))
+            self.present(alertController, animated: true)
+        }
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
+
         guard let albumInfo = albumInfo else { return 0 }
+
         return albumInfo.results.count - 1
     }
     
@@ -53,30 +69,43 @@ class AlbumInfoViewController: UITableViewController, AlbumsInfoManagerDelegate 
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
+        if albumInfo?.resultCount != nil {
+        
         let headerUIView = AlbumInfoViewForHeader()
         headerUIView.collectionNameLabel.text = albumInfo?.results[0].collectionName
         headerUIView.artistNameLabel.text = albumInfo?.results[0].artistName
         headerUIView.genreLabel.text = albumInfo?.results[0].primaryGenreName
-        headerUIView.releaseDateLabel.text = albumInfo?.results[0].releaseDate
+        headerUIView.releaseDateLabel.text = transformDate(date: (albumInfo?.results[0].releaseDate) ?? "")
 
         guard let url = URL(string: albumInfo?.results[0].artworkUrl100 ?? "" ) else { return nil }
         headerUIView.artworkImageView.sd_setImage(with: url)
-        
         return headerUIView
-        
-//
-//        let label = UILabel()
-//        label.text = albumInfo?.results[0].primaryGenreName
-//        label.textAlignment = .center
-//        label.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
-//        label.textColor = .purple
-//        return label
+        } else {
+            self.view.addSubview(self.activityIndicatorView)
+            self.activityIndicatorView.centerInSuperview()
+            return activityIndicatorView
+        }
     }
-    
-}
-    
 
-    
+    override func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
+        print(view.frame.height)
+        return albumInfo?.resultCount == 0 ? view.frame.height : 150
+    }
+
+    fileprivate func transformDate(date: String) -> String {
+        let dateFormatter = DateFormatter()
+        let tempLocale = dateFormatter.locale // save locale temporarily
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX") // set locale to reliable US_POSIX
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+        if let date = dateFormatter.date(from: date) {
+            dateFormatter.dateFormat = "yyyy"
+            dateFormatter.locale = tempLocale // reset the locale
+            let dateString = dateFormatter.string(from: date)
+            return dateString
+        }
+        return ""
+    }
+}
     
 
 

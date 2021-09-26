@@ -10,12 +10,12 @@ import SDWebImage
 
 class AlbumSearchCell: UICollectionViewCell {
     
-    var album: Album.Results! { // надо подумать
+    var album: Album.Results? {
         didSet {
-            self.collectionNameLabel.text = album.collectionName
-            self.artistNameLabel.text = album.artistName
+            self.collectionNameLabel.text = album?.collectionName
+            self.artistNameLabel.text = album?.artistName
 
-            guard let url = URL(string: album.artworkUrl100 ) else { return }
+            guard let url = URL(string: album?.artworkUrl100 ?? "" ) else { return }
             artworkImageView.sd_setImage(with: url)
   
         }
@@ -23,7 +23,6 @@ class AlbumSearchCell: UICollectionViewCell {
     
     let artworkImageView: UIImageView = {
         let imageView = UIImageView()
-//        imageView.backgroundColor = .red
         imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor).isActive = true
         imageView.layer.cornerRadius = 8
         imageView.clipsToBounds = true
@@ -33,7 +32,6 @@ class AlbumSearchCell: UICollectionViewCell {
     let collectionNameLabel: UILabel = {
         let label = UILabel()
         label.text = "Intense"
-//        label.backgroundColor = .blue
         label.font = UIFont.systemFont(ofSize: 17)
         label.textColor = .black
         label.numberOfLines = 1
@@ -43,7 +41,6 @@ class AlbumSearchCell: UICollectionViewCell {
     let artistNameLabel: UILabel = {
         let label = UILabel()
         label.text = "Armin van Buuren"
-//        label.backgroundColor = .yellow
         label.font = UIFont.systemFont(ofSize: 15)
         label.textColor = .lightGray
         label.numberOfLines = 1

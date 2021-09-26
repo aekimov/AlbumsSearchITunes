@@ -19,30 +19,21 @@ class HistoryViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
-
-//        let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("SearchHistory.plist")
-//        print(dataFilePath!)
-        
-        }
+    }
 
     override func viewWillAppear(_ animated: Bool) {
         history = searchRequests.history
-        
         tableView.reloadData()
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let selectedIndex = tableView.indexPathForSelectedRow?.row else { return }
         let cellText = history[selectedIndex]
-//        albumsSearchVC.searchTextField = cellText
-        
         let firstTab = (tabBarController?.viewControllers![0])! as! UINavigationController
         let vc = firstTab.viewControllers[0] as! AlbumsSearchController
         vc.searchTextFromHistory = cellText
         self.tabBarController?.selectedIndex = 0
-
     }
-
 
     // MARK: - Table view data source
 
@@ -55,9 +46,4 @@ class HistoryViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return history.count
     }
-
-
-
-
-
 }

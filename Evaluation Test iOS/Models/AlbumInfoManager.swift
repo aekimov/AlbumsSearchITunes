@@ -14,7 +14,6 @@ protocol AlbumsInfoManagerDelegate {
 
 class AlbumInfoManager {
     
-    
     var delegate: AlbumsInfoManagerDelegate?
     
     func getAlbumInfoAndSongs(collectionId: Int) {
@@ -24,8 +23,7 @@ class AlbumInfoManager {
         
         APIService.shared.getJSON(urlString: url) { (result: Result <AlbumInfo, APIService.APIError>) in
             switch result {
-            case .success(let albumInfo): // финальный объект тот что мы получаем
-                print(albumInfo.resultCount)
+            case .success(let albumInfo):
                 self.delegate?.didUpdateAlbums(albumInfo: albumInfo)
         
             case .failure(let apiError):
