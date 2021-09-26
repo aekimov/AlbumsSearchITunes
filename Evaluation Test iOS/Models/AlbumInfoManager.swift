@@ -17,9 +17,9 @@ class AlbumInfoManager {
     var delegate: AlbumsInfoManagerDelegate?
     
     func getAlbumInfoAndSongs(collectionId: Int) {
-
-        let url = "https://itunes.apple.com/lookup?id=\(collectionId)&entity=song" //Поиск по названию альбома из поисковой строки
-        print(url)
+        
+        //Search by collectionId (album Id) in order to show songs and info
+        let url = "https://itunes.apple.com/lookup?id=\(collectionId)&entity=song"
         
         APIService.shared.getJSON(urlString: url) { (result: Result <AlbumInfo, APIService.APIError>) in
             switch result {

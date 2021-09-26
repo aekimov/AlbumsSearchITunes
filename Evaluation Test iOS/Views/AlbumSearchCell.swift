@@ -6,11 +6,11 @@
 //
 
 import UIKit
-import SDWebImage
+import SDWebImage //CocoaPods for caching images
 
-class AlbumSearchCell: UICollectionViewCell {
+class AlbumSearchCell: UICollectionViewCell { //Creating a cell for UICollectionView
     
-    var album: Album.Results? {
+    var album: Album.Results? { //Setting values of properties
         didSet {
             self.collectionNameLabel.text = album?.collectionName
             self.artistNameLabel.text = album?.artistName
@@ -21,6 +21,7 @@ class AlbumSearchCell: UICollectionViewCell {
         }
     }
     
+    //Configuring Labels
     let artworkImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor).isActive = true
@@ -31,7 +32,7 @@ class AlbumSearchCell: UICollectionViewCell {
     
     let collectionNameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Intense"
+        label.text = "Album"
         label.font = UIFont.systemFont(ofSize: 17)
         label.textColor = .black
         label.numberOfLines = 1
@@ -40,7 +41,7 @@ class AlbumSearchCell: UICollectionViewCell {
     
     let artistNameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Armin van Buuren"
+        label.text = "Artist"
         label.font = UIFont.systemFont(ofSize: 15)
         label.textColor = .lightGray
         label.numberOfLines = 1
@@ -51,7 +52,7 @@ class AlbumSearchCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
     
-        let stackView = UIStackView(arrangedSubviews: [artworkImageView, collectionNameLabel, artistNameLabel])
+        let stackView = UIStackView(arrangedSubviews: [artworkImageView, collectionNameLabel, artistNameLabel]) //Create StackView for labels
         stackView.axis = .vertical
         addSubview(stackView)
         stackView.fillSuperview()

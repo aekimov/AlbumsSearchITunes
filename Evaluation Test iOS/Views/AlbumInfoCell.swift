@@ -7,9 +7,9 @@
 
 import UIKit
 
-class AlbumInfoCell: UITableViewCell {
+class AlbumInfoCell: UITableViewCell { //Cell for TableView
     
-    var albumInfo: AlbumInfo.Results? {
+    var albumInfo: AlbumInfo.Results? { //Setting values of properties
         didSet {
             self.trackNameLabel.text = albumInfo?.trackName
             self.artistNameLabel.text = albumInfo?.artistName
@@ -19,13 +19,13 @@ class AlbumInfoCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        let stackView = UIStackView(arrangedSubviews: [trackNameLabel, artistNameLabel])
+        let stackView = UIStackView(arrangedSubviews: [trackNameLabel, artistNameLabel]) //Creating StackView for two labels
         addSubview(stackView)
         stackView.axis = .vertical
-        stackView.fillSuperview(padding: .init(top: 8, left: 16, bottom: 8, right: 16))
-
+        stackView.fillSuperview(padding: .init(top: 8, left: 16, bottom: 8, right: 16)) //Anchoring stackViewin cell with padding
     }
     
+    //Configuring labels
     let trackNameLabel: UILabel = {
         let label = UILabel()
         label.text = "Intense"

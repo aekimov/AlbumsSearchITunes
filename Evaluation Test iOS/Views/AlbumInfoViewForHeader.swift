@@ -8,11 +8,12 @@
 import UIKit
 import WebKit
 
-class AlbumInfoViewForHeader: UITableViewHeaderFooterView {
+class AlbumInfoViewForHeader: UITableViewHeaderFooterView { //View for Header of TableView
 
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
         
+        //Creating two StackViews, one for stackView of labels, and one more for stackView and image
         let labelsStackView = UIStackView(arrangedSubviews: [collectionNameLabel, artistNameLabel, genreLabel, releaseDateLabel])
         labelsStackView.axis = .vertical
         labelsStackView.spacing = 4
@@ -26,7 +27,8 @@ class AlbumInfoViewForHeader: UITableViewHeaderFooterView {
         stackView.fillSuperview(padding: .init(top: 16, left: 16, bottom: 16, right: 16))
         contentView.backgroundColor = .white
     }
-
+    
+    //Configuring image and Labels
     let artworkImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.backgroundColor = .red
@@ -36,11 +38,10 @@ class AlbumInfoViewForHeader: UITableViewHeaderFooterView {
         imageView.clipsToBounds = true
         return imageView
     }()
-
     
     let collectionNameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Intense"
+        label.text = "Album"
         label.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         label.textColor = .black
         label.numberOfLines = 1
@@ -49,17 +50,16 @@ class AlbumInfoViewForHeader: UITableViewHeaderFooterView {
 
     let artistNameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Armin van Buuren"
+        label.text = "Artist"
         label.font = UIFont.systemFont(ofSize: 18)
         label.textColor = .purple
         label.numberOfLines = 1
         return label
     }()
 
-
     let genreLabel: UILabel = {
         let label = UILabel()
-        label.text = "Trance"
+        label.text = "Genre"
         label.font = UIFont.systemFont(ofSize: 18)
         label.textColor = .gray
         label.numberOfLines = 1
@@ -68,7 +68,7 @@ class AlbumInfoViewForHeader: UITableViewHeaderFooterView {
 
     let releaseDateLabel: UILabel = {
         let label = UILabel()
-        label.text = "2021"
+        label.text = "Year"
         label.font = UIFont.systemFont(ofSize: 18)
         label.textColor = .gray
         label.numberOfLines = 1
@@ -78,6 +78,4 @@ class AlbumInfoViewForHeader: UITableViewHeaderFooterView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
 }
-

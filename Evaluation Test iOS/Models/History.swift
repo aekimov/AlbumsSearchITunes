@@ -8,6 +8,5 @@
 import Foundation
 
 class History {
-    var history = [String]()
+    static var history = [String]()
 }
-let searchRequests = History()

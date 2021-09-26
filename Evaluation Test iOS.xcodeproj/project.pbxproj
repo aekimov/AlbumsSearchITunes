@@ -15,7 +15,7 @@
 		FF50C12726FF6E24004DFD32 /* AlbumInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF50C12626FF6E24004DFD32 /* AlbumInfoCell.swift */; };
 		FF50C12B26FF87F5004DFD32 /* AlbumInfoViewForHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF50C12A26FF87F5004DFD32 /* AlbumInfoViewForHeader.swift */; };
 		FF50C12D26FFC854004DFD32 /* HistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF50C12C26FFC854004DFD32 /* HistoryViewController.swift */; };
-		FF50C13126FFE67B004DFD32 /* SearchHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF50C13026FFE67B004DFD32 /* SearchHistory.swift */; };
+		FF50C13126FFE67B004DFD32 /* History.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF50C13026FFE67B004DFD32 /* History.swift */; };
 		FF50C1332700831A004DFD32 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF50C1322700831A004DFD32 /* String.swift */; };
 		FF5F3A7926FE536B00ADB084 /* AlbumSearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5F3A7826FE536B00ADB084 /* AlbumSearchCell.swift */; };
 		FF5F3A7D26FE661100ADB084 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5F3A7C26FE661100ADB084 /* APIService.swift */; };
@@ -41,7 +41,7 @@
 		FF50C12626FF6E24004DFD32 /* AlbumInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumInfoCell.swift; sourceTree = "<group>"; };
 		FF50C12A26FF87F5004DFD32 /* AlbumInfoViewForHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumInfoViewForHeader.swift; sourceTree = "<group>"; };
 		FF50C12C26FFC854004DFD32 /* HistoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
-		FF50C13026FFE67B004DFD32 /* SearchHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchHistory.swift; sourceTree = "<group>"; };
+		FF50C13026FFE67B004DFD32 /* History.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = History.swift; sourceTree = "<group>"; };
 		FF50C1322700831A004DFD32 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		FF5F3A7826FE536B00ADB084 /* AlbumSearchCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumSearchCell.swift; sourceTree = "<group>"; };
 		FF5F3A7C26FE661100ADB084 /* APIService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
@@ -121,7 +121,7 @@
 				FF816B3626FF0F7B008F3B10 /* AlbumManager.swift */,
 				FF50C12026FF6185004DFD32 /* AlbumInfo.swift */,
 				FF50C11E26FF5DF5004DFD32 /* AlbumInfoManager.swift */,
-				FF50C13026FFE67B004DFD32 /* SearchHistory.swift */,
+				FF50C13026FFE67B004DFD32 /* History.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -296,7 +296,7 @@
 				FFC95C6C26FD8C1100EBAE59 /* AlbumsSearchController.swift in Sources */,
 				FF50C12D26FFC854004DFD32 /* HistoryViewController.swift in Sources */,
 				FF50C12726FF6E24004DFD32 /* AlbumInfoCell.swift in Sources */,
-				FF50C13126FFE67B004DFD32 /* SearchHistory.swift in Sources */,
+				FF50C13126FFE67B004DFD32 /* History.swift in Sources */,
 				FFC95C5526FD74EB00EBAE59 /* AppDelegate.swift in Sources */,
 				FFC95C6926FD78D900EBAE59 /* MainTabBarController.swift in Sources */,
 				FF50C12126FF6185004DFD32 /* AlbumInfo.swift in Sources */,
