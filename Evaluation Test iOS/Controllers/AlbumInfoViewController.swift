@@ -50,7 +50,7 @@ class AlbumInfoViewController: UITableViewController, AlbumsInfoManagerDelegate 
     
     func didFailWithError(error: String) {
         DispatchQueue.main.async {
-            let alertController = UIAlertController(title: "URL not found.", message: error, preferredStyle: .alert)
+            let alertController = UIAlertController(title: "Connection Error.", message: error, preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
                 self.activityIndicatorView.removeFromSuperview()
             }))
@@ -66,6 +66,7 @@ class AlbumInfoViewController: UITableViewController, AlbumsInfoManagerDelegate 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! AlbumInfoCell
+        cell.backgroundColor = .white
         let info = albumInfo?.results[indexPath.row + 1] //Start from first element because zero element is album description
         cell.albumInfo = info
         return cell

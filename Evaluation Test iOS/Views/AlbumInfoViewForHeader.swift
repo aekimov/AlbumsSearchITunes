@@ -31,7 +31,7 @@ class AlbumInfoViewForHeader: UITableViewHeaderFooterView { //View for Header of
     //Configuring image and Labels
     let artworkImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.backgroundColor = .red
+        imageView.backgroundColor = .gray
         imageView.heightAnchor.constraint(equalToConstant: 120).isActive = true
         imageView.widthAnchor.constraint(equalToConstant: 120).isActive = true
         imageView.layer.cornerRadius = 8

@@ -22,7 +22,14 @@ class APIService {
             return
         } // Handling invalid URL error
         let request = URLRequest(url: url)
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        
+        let config = URLSessionConfiguration.default
+        config.requestCachePolicy = .reloadIgnoringLocalCacheData
+        config.urlCache = nil
+
+        let session = URLSession.init(configuration: config)
+//        URLSession.shared.dataTask(with: request)
+        session.dataTask(with: request) { data, response, error in
             if let error = error {
                 completion(.failure(.error("Error: \(error.localizedDescription)"))) // Error that indicates why the request failed, or nil if the request was successful.
                 return

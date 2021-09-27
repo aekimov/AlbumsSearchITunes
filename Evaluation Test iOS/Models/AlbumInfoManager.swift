@@ -29,7 +29,6 @@ class AlbumInfoManager {
             case .failure(let apiError):
                 switch apiError {
                 case .error(let errorString):
-                    print(errorString)
                     self.delegate?.didFailWithError(error: errorString)
                     
                 }

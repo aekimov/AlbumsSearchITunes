@@ -19,11 +19,11 @@ class AlbumsSearchController: UICollectionViewController, UICollectionViewDelega
     var searchTextFromSearchField: String = ""  // text for request when using button in SearchBar - method 'searchBarSearchButtonClicked'
     var searchTextFromHistory: String {         // text for request when use history tab
         set {
-            DispatchQueue.main.async {
-                self.albumManager.getAlbum(searchText: newValue)
-            }
+            self.albumManager.getAlbum(searchText: newValue)
+            navigationController?.popToRootViewController(animated: true)
             self.view.addSubview(self.activityIndicatorView)
             self.activityIndicatorView.centerInSuperview()
+            self.searchController.searchBar.text = newValue
         }
         get { searchController.searchBar.text ?? "" }
     }
@@ -60,8 +60,8 @@ class AlbumsSearchController: UICollectionViewController, UICollectionViewDelega
             History.history = items
         }
             
-//        let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("SearchHistory.plist")
-//        print(dataFilePath!)
+        let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("SearchHistory.plist")
+        print(dataFilePath!)
     }
     
     //MARK: - Protocol Methods
@@ -74,7 +74,7 @@ class AlbumsSearchController: UICollectionViewController, UICollectionViewDelega
     }
     func didFailWithError(error: String) {
         DispatchQueue.main.async {
-            let alertController = UIAlertController(title: "URL not found.", message: error, preferredStyle: .alert)
+            let alertController = UIAlertController(title: "Connection Error.", message: error, preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
                 self.activityIndicatorView.removeFromSuperview()
             }))
