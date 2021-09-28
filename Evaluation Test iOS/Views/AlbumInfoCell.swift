@@ -11,7 +11,8 @@ final class AlbumInfoCell: UITableViewCell { //Cell for TableView
     
     var albumInfo: Results? { //Setting values of properties
         didSet {
-            self.trackNameLabel.text = albumInfo?.trackName
+
+            self.trackNameLabel.text = albumInfo?.trackName ?? albumInfo?.collectionName // if there only 1 result then insted of trackName use collectionName
             self.artistNameLabel.text = albumInfo?.artistName
         }
     }

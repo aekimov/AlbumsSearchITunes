@@ -14,16 +14,16 @@ final class AlbumInfoViewController: UITableViewController {
     private let cellId = "cellId"
     private let albumManager = AlbumManager()
     private let albumViewForHeader = AlbumInfoViewForHeader() //View for tableView header
+    private let headerView = AlbumInfoViewForHeader()
     
     var collectionId: Int?
     private var albumInfo: AlbumInfoModel?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        tableView.register(AlbumInfoCell.self, forCellReuseIdentifier: cellId)
+        tableView.register(AlbumInfoCell.self, forCellReuseIdentifier: cellId) //register cell
         guard let collectionId = collectionId else { return }
-        fetchData(collectionId: collectionId) // request to show info and songs
+        fetchData(collectionId) // request to show info and songs using collectionId
     }
     
     private let activityIndicatorView: UIActivityIndicatorView = {
@@ -32,80 +32,61 @@ final class AlbumInfoViewController: UITableViewController {
         indicator.color = .darkGray
     return indicator
     }()
-
-    //MARK: - DateFormatter func
     
-    private func transformDate(date: String) -> String {
-        let dateFormatter = DateFormatter()
-        let tempLocale = dateFormatter.locale
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
-        if let date = dateFormatter.date(from: date) {
-            dateFormatter.dateFormat = "yyyy"
-            dateFormatter.locale = tempLocale
-            let dateString = dateFormatter.string(from: date)
-            return dateString
-        }
-        return ""
-    }
-
-
-private func fetchData(collectionId: Int) {
+    //MARK: - Process Result With Model and Error
     
-    albumManager.getAlbumInfoAndSongs(collectionId) { result in
-        switch result {
-        case .success(let albumInfo):
-            DispatchQueue.main.async {
-                self.albumInfo = albumInfo
-                self.tableView.reloadData()
-            }
-            
-        case .failure(let apiError):
-            switch apiError {
-            case .error(let errorString):
+    private func fetchData(_ collectionId: Int) {
+        
+        albumManager.getAlbumInfoAndSongs(collectionId) { result in
+            switch result {
+            case .success(let albumInfo):
                 DispatchQueue.main.async {
-                    let alertController = UIAlertController(title: "Connection Error.", message: errorString, preferredStyle: .alert)
-                    alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
-                        self.activityIndicatorView.removeFromSuperview()
-                    }))
-                    self.present(alertController, animated: true)
+                    self.albumInfo = albumInfo //if success then fill tableview cells with data from albumInfo
+                    self.tableView.reloadData()
+                }
+                
+            case .failure(let apiError): // if falure then gererate error and show alert
+                switch apiError {
+                case .error(let errorString):
+                    DispatchQueue.main.async {
+                        let alertController = UIAlertController(title: "Something went wrong.", message: errorString, preferredStyle: .alert)
+                        alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
+                            self.activityIndicatorView.removeFromSuperview()
+                        }))
+                        self.present(alertController, animated: true)
+                    }
                 }
             }
         }
     }
 }
-}
 
 //MARK: - TableView DataSource and Delegate Methods
 
 extension AlbumInfoViewController {
-
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let albumInfo = albumInfo else { return 0 }
-        return albumInfo.results.count - 1
+        return albumInfo.results.count - 1 == 0 ? 1 : albumInfo.results.count - 1 //if only 1 result then use 1 row, if more than 1 result then decrement by 1 because zero element is album description
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = (tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as? AlbumInfoCell) else { return UITableViewCell() }
         cell.backgroundColor = .white
-        let info = albumInfo?.results[indexPath.row + 1] //Start from first element because zero element is album description
-        cell.albumInfo = info
+        if albumInfo?.results.count == 1 {
+            cell.albumInfo = albumInfo?.results[indexPath.row] // if there if only 1 element
+        } else {
+            //if there are >1 element then start from first element because zero element is album description
+            cell.albumInfo = albumInfo?.results[indexPath.row + 1]
+        }
         return cell
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
         if albumInfo?.resultCount != nil {
-            
-            let headerUIView = AlbumInfoViewForHeader()
-            headerUIView.collectionNameLabel.text = albumInfo?.results[0].collectionName
-            headerUIView.artistNameLabel.text = albumInfo?.results[0].artistName
-            headerUIView.genreLabel.text = albumInfo?.results[0].primaryGenreName
-            headerUIView.releaseDateLabel.text = transformDate(date: (albumInfo?.results[0].releaseDate) ?? "")
-            
-            guard let url = URL(string: albumInfo?.results[0].artworkUrl100 ?? "" ) else { return nil }
-            headerUIView.artworkImageView.sd_setImage(with: url)
-            return headerUIView
+            headerView.headerInfo = albumInfo
+            return headerView
         } else {
             self.view.addSubview(self.activityIndicatorView)
             self.activityIndicatorView.centerInSuperview()
@@ -115,7 +96,7 @@ extension AlbumInfoViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
     }
-
+    
     override func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
         return albumInfo?.resultCount == 0 ? view.frame.height : 150
     }
