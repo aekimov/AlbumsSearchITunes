@@ -8,40 +8,25 @@
 import UIKit
 
 
-protocol AlbumsManagerDelegate { //protocol to transfer data and errors
-    func didUpdateAlbums(albumResults: [Album.Results])
-    func didFailWithError(error: String)
-}
-
-class AlbumManager {
-
-    var delegate: AlbumsManagerDelegate?
-    var sortedResults = [Album.Results]()
+final class AlbumManager {
     
-    func getAlbum(searchText: String?) {
-        guard let searchTerm = searchText else { return }
+    func getAlbum(_ searchText: String, completionHandler: @escaping (Result <AlbumInfoModel, APIService.APIError>) -> Void) {
         
         //Search by the name of album
-        let urlString = "https://itunes.apple.com/search?term=\(searchTerm)&media=music&entity=album&attribute=albumTerm&limit=20"
+        let urlString = "https://itunes.apple.com/search?term=\(searchText)&media=music&entity=album&attribute=albumTerm"
         let url = urlString.encodeUrl //Encode url into utf8
         
-        //print(url)
-        
-        APIService.shared.getJSON(urlString: url) { (result: Result <Album, APIService.APIError>) in
-            switch result {
-            case .success(let album):
-                
-                self.sortedResults = album.results.sorted { $0.collectionName < $1.collectionName } //Sort in alphabetical order
-                self.delegate?.didUpdateAlbums(albumResults: self.sortedResults) //Results - array of albums
-                
-            case .failure(let apiError):
-                switch apiError {
-                case .error(let errorString):
-                    self.delegate?.didFailWithError(error: errorString) // Error
-                    
-                }
-            }
+        APIService.shared.getJSON(urlString: url) { (result: Result <AlbumInfoModel, APIService.APIError>) in
+            completionHandler(result)
         }
     }
     
+    func getAlbumInfoAndSongs(_ collectionId: Int, completionHandler: @escaping (Result <AlbumInfoModel, APIService.APIError>) -> Void) {
+        
+        //Search by collectionId (album Id) in order to show songs and info
+        let url = "https://itunes.apple.com/lookup?id=\(collectionId)&entity=song"
+        APIService.shared.getJSON(urlString: url) { (result: Result <AlbumInfoModel, APIService.APIError>) in
+            completionHandler(result)
+        }
+    }
 }

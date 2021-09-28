@@ -9,109 +9,129 @@ import UIKit
 
 //VC for albums search logic
 
-class AlbumsSearchController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UISearchBarDelegate, AlbumsManagerDelegate {
+final class AlbumsSearchController: UICollectionViewController, UISearchBarDelegate {
 
-    fileprivate let cellId = "cellId"
-    fileprivate let searchController = UISearchController(searchResultsController: nil)
-    fileprivate var albumManager = AlbumManager()
-    
-    var albums: [Album.Results]?
-    var searchTextFromSearchField: String = ""  // text for request when using button in SearchBar - method 'searchBarSearchButtonClicked'
+    private let cellId = "cellId"
+    private let searchController = UISearchController(searchResultsController: nil)
+    private let albumManager = AlbumManager()
+    let defaults = UserDefaults.standard
+
+    private var albums: [Results]?
     var searchTextFromHistory: String {         // text for request when use history tab
         set {
-            self.albumManager.getAlbum(searchText: newValue)
-            navigationController?.popToRootViewController(animated: true)
+            fetchData(searchText: newValue)
+            navigationController?.popToRootViewController(animated: true) // pop to rootVC to show results
             self.view.addSubview(self.activityIndicatorView)
             self.activityIndicatorView.centerInSuperview()
             self.searchController.searchBar.text = newValue
         }
         get { searchController.searchBar.text ?? "" }
     }
-    
-    let defaults = UserDefaults.standard
    
-    fileprivate let initialSearchTextLabel: UILabel = {
+    private let initialSearchTextLabel: UILabel = {
         let label = UILabel()
         label.text = "No results or you have not searched. \n Please enter search query."
-        label.numberOfLines = 2
+        label.numberOfLines = 0
         label.font = UIFont.boldSystemFont(ofSize: 22)
         label.textAlignment = .center
         return label
     }()
     
-    fileprivate let activityIndicatorView: UIActivityIndicatorView = {
+    private let activityIndicatorView: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .whiteLarge)
         indicator.startAnimating()
         indicator.color = .darkGray
     return indicator
     }()
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        collectionView.backgroundColor = .white
-        collectionView.register(AlbumSearchCell.self, forCellWithReuseIdentifier: cellId)
         
         setupSearchBar()
-        albumManager.delegate = self
-        view.addSubview(initialSearchTextLabel)
-        initialSearchTextLabel.centerInSuperview()
-        self.definesPresentationContext = true
+        setupUI()
+        
         if let items = defaults.array(forKey: "SearchHistory") as? [String] {
             History.history = items
         }
-            
-        let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("SearchHistory.plist")
-        print(dataFilePath!)
     }
     
-    //MARK: - Protocol Methods
-    
-    func didUpdateAlbums(albumResults: [Album.Results]) {
-        DispatchQueue.main.async {
-            self.albums = albumResults
-            self.collectionView.reloadData()
-        }
-    }
-    func didFailWithError(error: String) {
-        DispatchQueue.main.async {
-            let alertController = UIAlertController(title: "Connection Error.", message: error, preferredStyle: .alert)
-            alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
-                self.activityIndicatorView.removeFromSuperview()
-            }))
-            self.present(alertController, animated: true)
-        }
+    private func setupUI() {
+        collectionView.backgroundColor = .white
+        collectionView.register(AlbumSearchCell.self, forCellWithReuseIdentifier: cellId)
+        self.definesPresentationContext = true
+        
+        view.addSubview(initialSearchTextLabel)
+        initialSearchTextLabel.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: nil, trailing: view.safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 150, left: 16, bottom: 0, right: 16))
+       
     }
     
     //MARK: - Setup SearchBar and Methods
     
-    fileprivate func setupSearchBar() {
+    private func setupSearchBar() {
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
-        searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.delegate = self
-    }
-
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        searchTextFromSearchField = searchText
-        self.albums = nil
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-
-        let emptyField = searchBar.text?.trimmingCharacters(in: .whitespaces).isEmpty ?? true //Check if searchText is not only spaces
-        if !emptyField {
-            self.albumManager.getAlbum(searchText: searchTextFromSearchField)
-            History.history.append(searchTextFromSearchField)
+        guard let searchQuery = searchBar.text else { return }
+        
+        if !searchQuery.trimmingCharacters(in: .whitespaces).isEmpty { //Check if searchText is not only spaces
+            fetchData(searchText: searchQuery)
+            History.history.append(searchQuery)
             defaults.setValue(History.history, forKey: "SearchHistory")
             view.addSubview(activityIndicatorView)
             activityIndicatorView.centerInSuperview()
         } else { return }
     }
     
-    //MARK: - CollectionView Setups
+    
+    //MARK: - Preparing Data and Fetching
+    
+    private func fetchData(searchText: String) {
+        var sortedResults = [Results]()
+        
+        albumManager.getAlbum(searchText) { result in
+            switch result {
+            case .success(let album):
+                sortedResults = album.results.sorted { $0.collectionName < $1.collectionName } //Sort in alphabetical order
+                DispatchQueue.main.async {
+                    self.albums = sortedResults
+                    self.collectionView.reloadData()
+                }
+                
+            case .failure(let apiError):
+                switch apiError {
+                case .error(let errorString):
+                    DispatchQueue.main.async {
+                        let alertController = UIAlertController(title: "Connection Error.", message: errorString, preferredStyle: .alert)
+                        alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
+                            self.activityIndicatorView.removeFromSuperview()
+                        }))
+                        self.present(alertController, animated: true)
+                    }
+                }
+            }
+        }
+    }
+    
+    //MARK: - Inits
+    
+    init() {
+        super.init(collectionViewLayout: UICollectionViewFlowLayout())
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+//MARK: - CollectionView Delegate Methods
+
+extension AlbumsSearchController: UICollectionViewDelegateFlowLayout {
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-
+        
         let albumInfoVC = AlbumInfoViewController(style: .grouped)
         let collectionId = albums?[indexPath.item].collectionId // Passing collectionId for configuring request
         albumInfoVC.collectionId = collectionId
@@ -132,7 +152,7 @@ class AlbumsSearchController: UICollectionViewController, UICollectionViewDelega
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! AlbumSearchCell
+        guard let cell = (collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as? AlbumSearchCell) else { return UICollectionViewCell() }
         let album = albums?[indexPath.item]
         cell.album = album
         return cell
@@ -146,20 +166,11 @@ class AlbumsSearchController: UICollectionViewController, UICollectionViewDelega
             initialSearchTextLabel.isHidden = false
             activityIndicatorView.removeFromSuperview()
         } else if let number = albums?.count {
-            if number > 1 {
+            if number > 0 {
                 activityIndicatorView.removeFromSuperview()
                 initialSearchTextLabel.isHidden = true
             }
         }
         return albums?.count ?? 0
     }
-
-    init() {
-        super.init(collectionViewLayout: UICollectionViewFlowLayout())
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
 }

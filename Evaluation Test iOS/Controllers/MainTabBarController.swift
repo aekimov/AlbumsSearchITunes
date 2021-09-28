@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MainTabBarController: UITabBarController { //Configuring TabBarController with VC's
+final class MainTabBarController: UITabBarController { //Configuring TabBarController with VC's
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -18,14 +18,13 @@ class MainTabBarController: UITabBarController { //Configuring TabBarController 
     }
     
     // Method produceNavController is created in order to eliminate repeating code while initialising ViewControllers
-    fileprivate func produceNavController(viewController: UIViewController, title: String, imageName: String) -> UIViewController {
+    private func produceNavController(viewController: UIViewController, title: String, imageName: String) -> UIViewController {
         
         let navController = UINavigationController(rootViewController: viewController)
         viewController.view.backgroundColor = .white
         viewController.navigationItem.title = title
         navController.tabBarItem.title = title
         navController.tabBarItem.image = UIImage(named: imageName)        
-        
         return navController
     }
 }

@@ -7,9 +7,9 @@
 
 import UIKit
 
-class AlbumInfoCell: UITableViewCell { //Cell for TableView
+final class AlbumInfoCell: UITableViewCell { //Cell for TableView
     
-    var albumInfo: AlbumInfo.Results? { //Setting values of properties
+    var albumInfo: Results? { //Setting values of properties
         didSet {
             self.trackNameLabel.text = albumInfo?.trackName
             self.artistNameLabel.text = albumInfo?.artistName

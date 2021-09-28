@@ -8,16 +8,15 @@
 import UIKit
 import SDWebImage //CocoaPods for caching images
 
-class AlbumSearchCell: UICollectionViewCell { //Creating a cell for UICollectionView
+final class AlbumSearchCell: UICollectionViewCell { //Creating a cell for UICollectionView
     
-    var album: Album.Results? { //Setting values of properties
+    var album: Results? { //Setting values of properties
         didSet {
             self.collectionNameLabel.text = album?.collectionName
             self.artistNameLabel.text = album?.artistName
 
             guard let url = URL(string: album?.artworkUrl100 ?? "" ) else { return }
             artworkImageView.sd_setImage(with: url)
-  
         }
     }
     

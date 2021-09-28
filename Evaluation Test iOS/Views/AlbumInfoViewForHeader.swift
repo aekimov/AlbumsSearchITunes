@@ -6,9 +6,8 @@
 //
 
 import UIKit
-import WebKit
 
-class AlbumInfoViewForHeader: UITableViewHeaderFooterView { //View for Header of TableView
+final class AlbumInfoViewForHeader: UITableViewHeaderFooterView { //View for Header of TableView
 
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
